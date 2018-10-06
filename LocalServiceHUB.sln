@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2035
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVCHUB", "MVCHUB\MVCHUB.csproj", "{9DA8633E-B3E2-4C43-BCC8-1BA47DF7245E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9DA8633E-B3E2-4C43-BCC8-1BA47DF7245E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9DA8633E-B3E2-4C43-BCC8-1BA47DF7245E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9DA8633E-B3E2-4C43-BCC8-1BA47DF7245E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9DA8633E-B3E2-4C43-BCC8-1BA47DF7245E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6E81BEED-CDB4-4A58-8DA4-E0F9A44D429E}
+	EndGlobalSection
+EndGlobal
