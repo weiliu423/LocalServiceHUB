@@ -9,18 +9,8 @@ namespace MVCHUB.Services
 {
     public class DBContext : IDBContext
     {
-        Login Context = new Login();
-        public DbSet<UserAccount> UserAccount {
-            get
-            {
-                return Context.UserAccounts;
-            }
-
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
+        accountModelEF Context = new accountModelEF();
+       
         public DbSet<Account> Account {
             get
             {
@@ -32,7 +22,7 @@ namespace MVCHUB.Services
                 throw new NotImplementedException();
             }
         }
-        public Login Contexts
+        public accountModelEF Contexts
         {
             get
             {
@@ -45,6 +35,6 @@ namespace MVCHUB.Services
             }
         }
 
-        Login IDBContext.Context { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        accountModelEF IDBContext.Context { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
     }
 }

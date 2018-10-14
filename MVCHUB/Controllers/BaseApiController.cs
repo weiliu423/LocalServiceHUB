@@ -41,7 +41,7 @@ namespace MVCHUB.Controllers
             {
                 return new BaseDto<string>
                 {
-                    Success = true,
+                    //Success = true,
                     Data = message + ": Stress Test Web API by Snipp Interactive"
                 };
             }
@@ -49,8 +49,8 @@ namespace MVCHUB.Controllers
             {
                 return new BaseDto<string>()
                 {
-                    Success = false,
-                    Message = e.Message
+                    //Success = false,
+                    //Message = e.Message
                 };
             }
         }
@@ -69,8 +69,8 @@ namespace MVCHUB.Controllers
                     HttpStatusCode.NotFound,
                     new BaseDto<int>()
                     {
-                        Success = false,
-                        Message = $"No such client {client} available"
+                       // Success = false,
+                       // Message = $"No such client {client} available"
                     }));
         }
 
@@ -87,8 +87,8 @@ namespace MVCHUB.Controllers
                     HttpStatusCode.BadRequest,
                     new BaseDto<int>()
                     {
-                        Success = false,
-                        Message = "The resource submitted contains no data or could not be serialized: please check the information is correct and try again"
+                       // Success = false,
+                        //Message = "The resource submitted contains no data or could not be serialized: please check the information is correct and try again"
                     }));
         }
 
@@ -106,8 +106,8 @@ namespace MVCHUB.Controllers
                     HttpStatusCode.BadRequest,
                     new BaseDto<string>()
                     {
-                        Success = false,
-                        Message = "No response received from " + service,
+                       // Success = false,
+                       // Message = "No response received from " + service,
                         Data = null
                     }));
         }
@@ -126,8 +126,8 @@ namespace MVCHUB.Controllers
                     HttpStatusCode.InternalServerError,
                     new BaseDto<string>()
                     {
-                        Success = false,
-                        Message = "Error: " + e.Message
+                        //Success = false,
+                       // Message = "Error: " + e.Message
                     }));
         }
 
@@ -144,7 +144,7 @@ namespace MVCHUB.Controllers
                     HttpStatusCode.OK,
                     new BaseDto<int>()
                     {
-                        Success = true
+                       // Success = true
                     }));
         }
 
@@ -161,8 +161,8 @@ namespace MVCHUB.Controllers
                     HttpStatusCode.NotFound,
                     new BaseDto<string>()
                     {
-                        Success = false,
-                        Message = "No resource was found matching the specified criteria"
+                       // Success = false,
+                       // Message = "No resource was found matching the specified criteria"
                     }));
         }
     }

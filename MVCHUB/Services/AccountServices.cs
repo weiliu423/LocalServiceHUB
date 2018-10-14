@@ -32,8 +32,39 @@ namespace MVCHUB.Services
         public async Task<IEnumerable<string>> getAllUsers()
         {
 
-            var names = await _context.Account.Select(g => g.Username).ToListAsync();
+            var names = await _context.Account.Select(g => g.userName).ToListAsync();
    
+            if (names != null)
+            {
+                return names;
+            }
+            throw new Exception("No user found");
+        }
+        public async Task<IEnumerable<string>> getAllUsersSql()
+        {
+
+            string queryString = "select Username, Password from Account";
+            string connectionString = "Server=fyplab.database.windows.net;Database=LSHUB;User Id=wei;Password=Predator423;";
+            List<string> names = new List<string>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                SqlCommand command = new SqlCommand(queryString, connection);
+                //command.Parameters.AddWithValue("@tPatSName", "Your-Parm-Value");
+                connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                try
+                {
+                    while (reader.Read())
+                    {
+                        names.Add(reader["Username"].ToString()+":"+ reader["Password"].ToString());
+                    }
+                }
+                finally
+                {
+                    // Always call Close when done reading.
+                    reader.Close();
+                }
+            }
             if (names != null)
             {
                 return names;
@@ -44,27 +75,26 @@ namespace MVCHUB.Services
         public async Task<AccountModel> createNewAccount(AccountModel data)
         {
                 Account Account = new Account();
-                //DateTime date = DateTime.NowAccount
+                DateTime date = DateTime.Now;
                 if (data != null)
                 {
-                Account.Username=data.Username;
-                //data1.UserId = _context.UserAccount.Select(x => x.ID).FirstOrDefaultAsync().ToString();
-                // data1.CreateDate = DateTime.Now;
-                // accountModel.Email = data1.Email;
-                // data1.ExpirationDate = DateTime.Now.AddYears(10);
-                //accountModel.ExpirationDate = data1.ExpirationDate;
-                //accountModel.Firstname = data1.Firstname;
-                //accountModel.Lastname = data1.Lastname;
-                Account.ResourceKey = "";
-                Account.Password = data.EncPass;
-                    //accountModel.UserId = data1.UserId;
+                Account.userName=data.UserName;
+                Account.createDate = date;
+                Account.expirationDate = date.AddYears(1); 
+                Account.resourceKey = "";
+                Account.Password = data.Password;
+                Account.firstName = data.FirstName;
+                Account.lastName = data.LastName;
+                Account.fullName = data.FirstName+ " " + data.LastName;
+                Account.Email = data.Email;
+                
                    
 
-                    var UserAccount = await _context.Account.FirstOrDefaultAsync(x => x.Username == data.Username);
+                    var UserAccount = await _context.Account.FirstOrDefaultAsync(x => x.userName == data.UserName);
 
                     if (UserAccount != null)
                     {
-                        throw new Exception("user with same email already exists");
+                        throw new Exception("User with same username already exists");
                     }
 
                     _context.Account.Add(Account);

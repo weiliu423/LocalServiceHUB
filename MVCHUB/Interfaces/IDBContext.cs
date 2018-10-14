@@ -8,8 +8,7 @@ namespace MVCHUB.Interfaces
 {
     public interface IDBContext
     {
-        Login Context { get; set; }
-        DbSet<UserAccount> UserAccount { get; set; }
+        accountModelEF Context { get; set; }
         DbSet<Account> Account { get; set; }
     
 

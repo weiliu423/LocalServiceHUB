@@ -9,26 +9,33 @@ namespace MVCHUB
     [Table("Account")]
     public partial class Account
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Account()
-        {
-            UserAccounts = new HashSet<UserAccount>();
-        }
-
         public int ID { get; set; }
 
         [StringLength(200)]
-        public string Username { get; set; }
+        public string userName { get; set; }
 
-        [StringLength(200)]
+        [StringLength(256)]
         public string Password { get; set; }
 
         [StringLength(200)]
-        public string ResourceKey { get; set; }
+        public string resourceKey { get; set; }
 
-       
+        [Column(TypeName = "date")]
+        public DateTime? createDate { get; set; }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<UserAccount> UserAccounts { get; set; }
+        [Column(TypeName = "date")]
+        public DateTime? expirationDate { get; set; }
+
+        [StringLength(50)]
+        public string fullName { get; set; }
+
+        [StringLength(50)]
+        public string firstName { get; set; }
+
+        [StringLength(50)]
+        public string lastName { get; set; }
+
+        [StringLength(200)]
+        public string Email { get; set; }
     }
 }

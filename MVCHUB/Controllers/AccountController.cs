@@ -9,6 +9,7 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
 using MVCHUB.Services;
 using MVCHUB.Models;
+using System.Net.Http.Headers;
 
 namespace MVCHUB.Controllers
 {
@@ -24,10 +25,37 @@ namespace MVCHUB.Controllers
         {
             _accountSevices = new AccountServices();
         }
+        [HttpGet]
+        [Route("")]
+        public HttpResponseMessage Get()
+        {
+            var response = new HttpResponseMessage();
+            response.Content = new StringContent(@"<html><head><style>
+            .by {margin : auto;} 
+            .cn {
+                  position: absolute;
+                    top: 50%; left: 50%;
+                transform: translate(-50%,-50%);
+                  display: table-cell;
+                  width: 500px;
+                  height: 200px;
+                  vertical-align: middle;
+                  text-align: center;
+                  color: red;
+                  font-size: large;
+                }
+
+                
+            </style></head>
+            <body class= ""by"">
+            <div class=""cn""><div><u>Secure API Encoding</u></div><div>You are not authorised to see this message!</div></div></body></html>");
+            response.Content.Headers.ContentType = new MediaTypeHeaderValue("text/html");
+            return response;
+        }
 
         [HttpGet]
         [Route("getAllUsers")]
-        public async Task<IHttpActionResult> getAllClients()
+        public async Task<IHttpActionResult> getAllUsers()
         {
             try
             {
@@ -36,16 +64,21 @@ namespace MVCHUB.Controllers
 
                 if (clientNames != null)
                 {
-                                 
-                    return ResponseMessage(
-                        Request.CreateResponse(
+                    var response = Request.CreateResponse(
                                 HttpStatusCode.OK,
                                 new BaseDto<IEnumerable<string>>()
                                 {
-                                    Success = true,
-                                    Message = "List of users",
+                                   // Success = true,
+                                   // Message = "List of users",
                                     Data = clientNames
-                                }));
+                                });
+                    response.Headers.CacheControl = new CacheControlHeaderValue()
+                    {
+                        Public = true,
+                        MaxAge = TimeSpan.FromSeconds(3600)
+                    };
+                    return ResponseMessage(response);
+                    
                 }
                 //Error not found
                 return NotFoundResponse();
@@ -56,7 +89,40 @@ namespace MVCHUB.Controllers
                 return InternalServerErrorResponse(ex);
             }
         }
+        [HttpGet]
+        [Route("getAllUsersSql")]
+        public async Task<IHttpActionResult> getAllClients()
+        {
+            try
+            {
+                //Calls method from service
+                IEnumerable<string> clientNames = await _accountSevices.getAllUsersSql();
 
+                if (clientNames != null)
+                {
+                    var response = Request.CreateResponse(
+                                HttpStatusCode.OK,
+                                new BaseDto<IEnumerable<string>>()
+                                {                                 
+                                    Data = clientNames
+                                });
+                    response.Headers.CacheControl = new CacheControlHeaderValue()
+                    {
+                        Public = true,
+                        MaxAge = TimeSpan.FromSeconds(3600)
+                    };
+                    return ResponseMessage(response);
+
+                }
+                //Error not found
+                return NotFoundResponse();
+            }
+            catch (Exception ex)
+            {
+                //Returns a 500 response with the specified exception message
+                return InternalServerErrorResponse(ex);
+            }
+        }
         //[HttpGet]
         //[Route("getAllTypes")]
         //public async Task<IHttpActionResult> getAllTypes()
@@ -171,7 +237,7 @@ namespace MVCHUB.Controllers
 
         [HttpPost]
         [Route("createNewAccount")]
-        public async Task<IHttpActionResult> createNewAccount(HttpRequestMessage createNew)
+        public async Task<IHttpActionResult> CreateNewAccount(HttpRequestMessage createNew)
         {
             try
             {
@@ -195,8 +261,9 @@ namespace MVCHUB.Controllers
                         Request.CreateResponse(
                            HttpStatusCode.Created,
                            new BaseDto<AccountModel>()
-                           {                         
-                               Message = createNewAccount.Username + " Created",
+                           {       
+                               //Success = true,
+                              // Message = createNewAccount.UserName + " Created",
                                Data = createNewAccount
                            }));
                     }

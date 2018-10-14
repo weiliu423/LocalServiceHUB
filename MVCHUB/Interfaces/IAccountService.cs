@@ -10,6 +10,7 @@ namespace MVCHUB.Interfaces
     public interface IAccountService
     {
         Task<IEnumerable<string>> getAllUsers();
+        Task<IEnumerable<string>> getAllUsersSql();
         Task<AccountModel> createNewAccount(AccountModel data);
     }
 }
