@@ -10,9 +10,11 @@ using Newtonsoft.Json.Schema;
 using MVCHUB.Services;
 using MVCHUB.Models;
 using System.Net.Http.Headers;
+using System.Web.Http.Cors;
 
 namespace MVCHUB.Controllers
 {
+    [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class AccountController : BaseApiController
     {
 
@@ -43,9 +45,7 @@ namespace MVCHUB.Controllers
                   text-align: center;
                   color: red;
                   font-size: large;
-                }
-
-                
+                }    
             </style></head>
             <body class= ""by"">
             <div class=""cn""><div><u>Secure API Encoding</u></div><div>You are not authorised to see this message!</div></div></body></html>");
@@ -234,6 +234,63 @@ namespace MVCHUB.Controllers
         //        return InternalServerErrorResponse(ex);
         //    }
         //}
+        [HttpPost]
+        [Route("signin")]
+        public async Task<IHttpActionResult> CheckSignIn(HttpRequestMessage signin)
+        {
+            try
+            {
+
+                if (signin != null)
+                {
+                    var json = await signin.Content.ReadAsStringAsync();
+
+                    if (string.IsNullOrEmpty(json))
+                    {
+                        //Return no data found
+                        return NoDataResponse();
+                    }
+
+                    credentialModel createNewModel = JsonConvert.DeserializeObject<credentialModel>(json);
+
+                    //Calls method from service
+                    bool valid = await _accountSevices.credentialCheck(createNewModel);
+                    if(valid == false)
+                    {
+                      return ResponseMessage(Request.CreateResponse(
+                      HttpStatusCode.Created,
+                      new BaseDto<bool>()
+                      {
+                          Success = false,
+                          Message = "UserName or Password is incorrect",
+                          Data = valid
+                      }));
+                    }
+                    else {
+                         return ResponseMessage(
+                         Request.CreateResponse(
+                          HttpStatusCode.Created,
+                          new BaseDto<bool>()
+                          {
+                           Success = valid,
+                           Message = createNewModel.UserName + " successfully signed in.",
+                           Data = valid
+                          }));
+                    }
+                   
+                }
+
+                return NotFoundResponse();
+                      
+
+            }
+            catch (Exception ex)
+            {
+                //Returns a 500 response with the specified exception message
+                return InternalServerErrorResponse(ex);
+            }
+        }
+
 
         [HttpPost]
         [Route("createNewAccount")]
@@ -262,14 +319,22 @@ namespace MVCHUB.Controllers
                            HttpStatusCode.Created,
                            new BaseDto<AccountModel>()
                            {       
-                               //Success = true,
+                               Success = true,
                               // Message = createNewAccount.UserName + " Created",
                                Data = createNewAccount
                            }));
                     }
+                    return ResponseMessage(
+                        Request.CreateResponse(
+                           HttpStatusCode.Created,
+                           new BaseDto<AccountModel>()
+                           {
+                               Success = false,
+                               Message = "Error input " + HttpStatusCode.BadRequest,
+                             
+                           }));
 
-                    return ResponseMessage(Request.CreateErrorResponse(HttpStatusCode.BadRequest, "Error Input: " + messages));
-   
+
             }
             catch (Exception ex)
             {

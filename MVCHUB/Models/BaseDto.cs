@@ -14,7 +14,7 @@ namespace MVCHUB.Models
         ///// <value>
         /////   <c>true</c> if success; otherwise, <c>false</c>.
         ///// </value>
-        //public bool Success { get; set; }
+        public bool Success { get; set; }
 
         ///// <summary>
         ///// Gets or sets the message.
@@ -22,7 +22,7 @@ namespace MVCHUB.Models
         ///// <value>
         ///// The message.
         ///// </value>
-        //public string Message { get; set; }
+        public string Message { get; set; }
 
         /// <summary>
         /// Gets or sets the data.

@@ -105,7 +105,41 @@ namespace MVCHUB.Services
                 throw new Exception("No data entered");
            
         }
+        public async Task<bool> credentialCheck(credentialModel data)
+        {
+            Account Account = new Account();          
+            if (data != null)
+            {
+                Account.userName = data.UserName;
+                Account.resourceKey = "";
+                Account.Password = data.Password;
+                //Account.firstName = data.FirstName;
+                //Account.lastName = data.LastName;
+                //Account.fullName = data.FirstName + " " + data.LastName;
+                //Account.Email = data.Email;
 
+                //var UserAccount = await _context.Account.Any(x=> x.userName.Select(data.UserName));
+                var result = (from e in _context.Account
+                              where e.userName == data.UserName && e.Password == data.Password
+                              select e).FirstOrDefault();
+
+                if (result != null)
+                {
+                    return true;
+                   
+                }else
+                {
+                    return false;
+                }
+
+                //_context.Account.Add(Account);
+
+                //_context.Contexts.SaveChanges();
+                //return false;
+            }
+            throw new Exception("No data entered");
+
+        }
         ////Get all stress test belonging to a client
         //public async Task<IEnumerable<StressTestModel>> getAllClientStressTests(string name)
         //{
