@@ -71,7 +71,37 @@ namespace MVCHUB.Services
             }
             throw new Exception("No user found");
         }
-        //Create new stress test
+        public async Task<string> getUserScore(string userid)
+        {
+
+            string queryString = "select played, won, lost from hangemanScores where userid = '" + userid + "'";
+            string connectionString = "Server=fyplab.database.windows.net;Database=LSHUB;User Id=wei;Password=Predator423;";
+            string names = "";
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                SqlCommand command = new SqlCommand(queryString, connection);
+                //command.Parameters.AddWithValue("@tPatSName", "Your-Parm-Value");
+                connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                try
+                {
+                    while (reader.Read())
+                    {
+                        names = reader["played"].ToString() + ":" + reader["won"].ToString() + ":" + reader["lost"].ToString();
+                    }
+                }
+                finally
+                {
+                    // Always call Close when done reading.
+                    reader.Close();
+                }
+            }
+            if (names != null)
+            {
+                return names;
+            }
+            throw new Exception("No score found");
+        }
         public async Task<AccountModel> createNewAccount(AccountModel data)
         {
                 Account Account = new Account();
@@ -87,10 +117,19 @@ namespace MVCHUB.Services
                 Account.lastName = data.LastName;
                 Account.fullName = data.FirstName+ " " + data.LastName;
                 Account.Email = data.Email;
-                
-                   
 
-                    var UserAccount = await _context.Account.FirstOrDefaultAsync(x => x.userName == data.UserName);
+
+                string queryString = "insert hangemanScores values ('" + data.UserName +"', 0,0,0 )";
+                string connectionString = "Server=fyplab.database.windows.net;Database=LSHUB;User Id=wei;Password=Predator423;";
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    SqlCommand command = new SqlCommand(queryString, connection);
+                    //command.Parameters.AddWithValue("@tPatSName", "Your-Parm-Value");
+                    connection.Open();
+                    SqlDataReader reader = command.ExecuteReader();
+
+                }
+                var UserAccount = await _context.Account.FirstOrDefaultAsync(x => x.userName == data.UserName);
 
                     if (UserAccount != null)
                     {
@@ -138,6 +177,23 @@ namespace MVCHUB.Services
                 //return false;
             }
             throw new Exception("No data entered");
+
+        }
+        public async Task<bool> scoreUpdate(ScoreModel data)
+        {
+
+            string queryString = "UPDATE [dbo].[hangemanScores] SET [played] = " + data.played + ",[won] = " + data.won + ",[lost] = " + data.lost + " WHERE userid = '" + data.userId + "'";
+            string connectionString = "Server=fyplab.database.windows.net;Database=LSHUB;User Id=wei;Password=Predator423;";
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                SqlCommand command = new SqlCommand(queryString, connection);
+                //command.Parameters.AddWithValue("@tPatSName", "Your-Parm-Value");
+                connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+              
+            }
+            return true;
+        
 
         }
         ////Get all stress test belonging to a client

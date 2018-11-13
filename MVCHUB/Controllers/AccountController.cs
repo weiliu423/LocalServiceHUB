@@ -89,6 +89,7 @@ namespace MVCHUB.Controllers
                 return InternalServerErrorResponse(ex);
             }
         }
+
         [HttpGet]
         [Route("getAllUsersSql")]
         public async Task<IHttpActionResult> getAllClients()
@@ -105,6 +106,41 @@ namespace MVCHUB.Controllers
                                 new BaseDto<IEnumerable<string>>()
                                 {                                 
                                     Data = clientNames
+                                });
+                    response.Headers.CacheControl = new CacheControlHeaderValue()
+                    {
+                        Public = true,
+                        MaxAge = TimeSpan.FromSeconds(3600)
+                    };
+                    return ResponseMessage(response);
+
+                }
+                //Error not found
+                return NotFoundResponse();
+            }
+            catch (Exception ex)
+            {
+                //Returns a 500 response with the specified exception message
+                return InternalServerErrorResponse(ex);
+            }
+        }
+
+        [HttpGet]
+        [Route("getScore")]
+        public async Task<IHttpActionResult> getScore(string userid)
+        {
+            try
+            {
+                //Calls method from service
+                string scores = await _accountSevices.getUserScore(userid);
+
+                if (scores != null)
+                {
+                    var response = Request.CreateResponse(
+                                HttpStatusCode.OK,
+                                new BaseDto<string>()
+                                {
+                                    Data = scores
                                 });
                     response.Headers.CacheControl = new CacheControlHeaderValue()
                     {
@@ -291,14 +327,12 @@ namespace MVCHUB.Controllers
             }
         }
 
-
         [HttpPost]
         [Route("createNewAccount")]
         public async Task<IHttpActionResult> CreateNewAccount(HttpRequestMessage createNew)
         {
             try
             {
-
                 if (createNew != null)
                 {
                     var json = await createNew.Content.ReadAsStringAsync();
@@ -333,6 +367,52 @@ namespace MVCHUB.Controllers
                                Message = "Error input " + HttpStatusCode.BadRequest,
                              
                            }));
+
+
+            }
+            catch (Exception ex)
+            {
+                //Returns a 500 response with the specified exception message
+                return InternalServerErrorResponse(ex);
+            }
+        }
+
+        [HttpPut]
+        [Route("updateScore")]
+        public async Task<IHttpActionResult> updateScore(HttpRequestMessage updateScore)
+        {
+            try
+            {
+                if (updateScore != null)
+                {
+                    var json = await updateScore.Content.ReadAsStringAsync();
+
+                    if (string.IsNullOrEmpty(json))
+                    {
+                        //Return no data found
+                        return NoDataResponse();
+                    }
+
+                    ScoreModel score = JsonConvert.DeserializeObject<ScoreModel>(json);
+
+                    //Calls method from service
+                    bool valid = await _accountSevices.scoreUpdate(score);
+                    if (valid == true)
+                    {
+                        return ResponseMessage(Request.CreateResponse(
+                        HttpStatusCode.Created,
+                        new BaseDto<bool>()
+                        {
+                            Success = true,
+                            Message = "updated",
+                            Data = valid
+                        }));
+                    }
+                    
+
+                }
+
+                return NotFoundResponse();
 
 
             }
@@ -559,5 +639,7 @@ namespace MVCHUB.Controllers
         //{
         //    return obj.IsValid(schema, out messages);
         //}
+
+
     }
 }
