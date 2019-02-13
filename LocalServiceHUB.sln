@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.27703.2035
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVCHUB", "MVCHUB\MVCHUB.csproj", "{9DA8633E-B3E2-4C43-BCC8-1BA47DF7245E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceAPI", "ServiceAPI\ServiceAPI.csproj", "{0AE58569-5379-4AC5-9D82-1C1B1799992C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{9DA8633E-B3E2-4C43-BCC8-1BA47DF7245E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9DA8633E-B3E2-4C43-BCC8-1BA47DF7245E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9DA8633E-B3E2-4C43-BCC8-1BA47DF7245E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0AE58569-5379-4AC5-9D82-1C1B1799992C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0AE58569-5379-4AC5-9D82-1C1B1799992C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0AE58569-5379-4AC5-9D82-1C1B1799992C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0AE58569-5379-4AC5-9D82-1C1B1799992C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
