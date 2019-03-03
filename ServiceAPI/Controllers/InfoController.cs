@@ -15,17 +15,17 @@ using System.Web.Http.Cors;
 namespace ServiceAPI.Controllers
 {
     [EnableCors(origins: "*", headers: "*", methods: "*")]
-    public class ServicesController : BaseApiController
+    public class InfoController : BaseApiController
     {
 
         //Error messages
         IList<string> messages;
-        ServiceServices _getSevices; 
+        infoServices _getSevices; 
 
         //Initializes a new instance of the <see cref="StresstestController"/> class.
-        public ServicesController()
+        public InfoController()
         {
-            _getSevices = new ServiceServices();
+            _getSevices = new infoServices();
         }
         [HttpGet]
         [Route("")]
@@ -68,8 +68,8 @@ namespace ServiceAPI.Controllers
                                 HttpStatusCode.OK,
                                 new BaseDto<IEnumerable<string>>()
                                 {
-                                   // Success = true,
-                                   // Message = "List of users",
+                                    Success = true,
+                                    Message = "List of services",
                                     Data = services
                                 });
                     response.Headers.CacheControl = new CacheControlHeaderValue()
@@ -90,203 +90,97 @@ namespace ServiceAPI.Controllers
             }
         }
 
-        //[HttpGet]
-        //[Route("getAllUsersSql")]
-        //public async Task<IHttpActionResult> getAllClients()
-        //{
-        //    try
-        //    {
-        //        //Calls method from service
-        //        IEnumerable<string> clientNames = await _getSevices.getAllUsersSql();
+        [HttpPost]
+        [Route("createService")]
+        public async Task<IHttpActionResult> createService(HttpRequestMessage createNew)
+        {
+            try
+            {
+                if (createNew != null)
+                {
+                    var json = await createNew.Content.ReadAsStringAsync();
 
-        //        if (clientNames != null)
-        //        {
-        //            var response = Request.CreateResponse(
-        //                        HttpStatusCode.OK,
-        //                        new BaseDto<IEnumerable<string>>()
-        //                        {                                 
-        //                            Data = clientNames
-        //                        });
-        //            response.Headers.CacheControl = new CacheControlHeaderValue()
-        //            {
-        //                Public = true,
-        //                MaxAge = TimeSpan.FromSeconds(3600)
-        //            };
-        //            return ResponseMessage(response);
+                    if (string.IsNullOrEmpty(json))
+                    {
+                        //Return no data found
+                        return NoDataResponse();
+                    }
 
-        //        }
-        //        //Error not found
-        //        return NotFoundResponse();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        //Returns a 500 response with the specified exception message
-        //        return InternalServerErrorResponse(ex);
-        //    }
-        //}
+                    infoModel createNewModel = JsonConvert.DeserializeObject<infoModel>(json);
 
-        ////[HttpGet]
-        ////[Route("getAllTypes")]
-        ////public async Task<IHttpActionResult> getAllTypes()
-        ////{
-        ////    try
-        ////    {
-        ////        //Calls method from service
-        ////        IEnumerable<string> types = await _getSevices.getAllTypes();
+                    //Calls method from service
+                    bool inserted = await _getSevices.createService(createNewModel);
 
-        ////        if (types != null)
-        ////        {
+                    return ResponseMessage(
+                    Request.CreateResponse(
+                       HttpStatusCode.Created,
+                       new BaseDto<bool>()
+                       {
+                           Success = inserted                             
+                       }));
+                }
+                return ResponseMessage(
+                    Request.CreateResponse(
+                       HttpStatusCode.Created,
+                       new BaseDto<infoModel>()
+                       {
+                           Success = false,
+                           Message = "Error input " + HttpStatusCode.BadRequest,
 
+                       }));            
+            }
+            catch (Exception ex)
+            {
+                //Returns a 500 response with the specified exception message
+                return InternalServerErrorResponse(ex);
+            }
+        }
 
-        ////            return ResponseMessage(
-        ////                 Request.CreateResponse(
-        ////                    HttpStatusCode.OK,
-        ////                    new BaseDto<IEnumerable<string>>()
-        ////                    {
-        ////                        Success = true,
-        ////                        Message = "List of types",
-        ////                        Data = types
-        ////                    }));
-        ////        }
-        ////        //Error not found
-        ////        return NotFoundResponse();
-        ////    }
-        ////    catch (Exception ex)
-        ////    {
-        ////        //Returns a 500 response with the specified exception message
-        ////        return InternalServerErrorResponse(ex);
-        ////    }
-        ////}
+        [HttpPost]
+        [Route("addServiceType")]
+        public async Task<IHttpActionResult> addServiceType(HttpRequestMessage createNew)
+        {
+            try
+            {
+                if (createNew != null)
+                {
+                    var json = await createNew.Content.ReadAsStringAsync();
 
-        ////[HttpGet]
-        ////[Route("{clientName}/getAllClientStressTests")]
-        ////public async Task<IHttpActionResult> getAllClientStressTests(string clientName)
-        ////{
-        ////    try
-        ////    {
-        ////        if (clientName == null)
-        ////        {
-        ////            //Cannot not have a name.
-        ////            return NotFoundResponse();
-        ////        }
+                    if (string.IsNullOrEmpty(json))
+                    {
+                        //Return no data found
+                        return NoDataResponse();
+                    }
 
+                    ServiceType createNewModel = JsonConvert.DeserializeObject<ServiceType>(json);
 
-        ////        //Calls method from service.
-        ////        IEnumerable<StressTestModel> allClientTest = await _getSevices.getAllClientStressTests(clientName);
+                    //Calls method from service
+                    bool inserted = await _getSevices.addServiceType(createNewModel);
 
-        ////        if (allClientTest != null)
-        ////        {
+                    return ResponseMessage(
+                    Request.CreateResponse(
+                       HttpStatusCode.Created,
+                       new BaseDto<bool>()
+                       {
+                           Success = inserted
+                       }));
+                }
+                return ResponseMessage(
+                    Request.CreateResponse(
+                       HttpStatusCode.Created,
+                       new BaseDto<bool>()
+                       {
+                           Success = false,
+                           Message = "Error input " + HttpStatusCode.BadRequest,
 
-
-        ////            return ResponseMessage(
-        ////                 Request.CreateResponse(
-        ////                    HttpStatusCode.OK,
-        ////                    new BaseDto<IEnumerable<StressTestModel>>()
-        ////                    {
-        ////                        Success = true,
-        ////                        Message = "Clienet Stress Tests",
-        ////                        Data = allClientTest
-        ////                    }));
-        ////        }
-        ////        //Error if specified name does not exists
-        ////        return null;
-        ////    }
-        ////    catch (Exception ex)
-        ////    {
-        ////        //Returns a 500 response with the specified exception message
-        ////        return InternalServerErrorResponse(ex);
-        ////    }
-        ////}
-
-        ////[HttpGet]
-        ////[Route("{clientName}/getClientStressTestById/{stressTestId}")]
-        ////public async Task<IHttpActionResult> getClientStressTestById(string clientName, int stressTestId)
-        ////{
-        ////    try
-        ////    {
-        ////        if (stressTestId == 0 || clientName == null)
-        ////        {
-        ////            //Return no data found
-        ////            return NotFoundResponse();
-        ////        }
-
-        ////        //Calls method from service
-        ////        StressTestModel stressTest = await _getSevices.getClientStressTestById(clientName, stressTestId);
-
-        ////        if (stressTest != null)
-        ////        {
-
-
-        ////            return ResponseMessage(
-        ////                 Request.CreateResponse(
-        ////                    HttpStatusCode.OK,
-        ////                    new BaseDto<StressTestModel>()
-        ////                    {
-        ////                        Success = true,
-        ////                        Message = stressTest.ToString(),
-        ////                        Data = stressTest
-        ////                    }));
-        ////        }
-        ////        //Error not found
-        ////        return NoDataResponse();
-        ////    }
-        ////    catch (Exception ex)
-        ////    {
-        ////        //Returns a 500 response with the specified exception message
-        ////        return InternalServerErrorResponse(ex);
-        ////    }
-        ////}
-
-        //[HttpPost]
-        //[Route("createNewAccount")]
-        //public async Task<IHttpActionResult> CreateNewAccount(HttpRequestMessage createNew)
-        //{
-        //    try
-        //    {
-        //        if (createNew != null)
-        //        {
-        //            var json = await createNew.Content.ReadAsStringAsync();
-
-        //            if (string.IsNullOrEmpty(json))
-        //            {
-        //                //Return no data found
-        //                return NoDataResponse();
-        //            }
-
-        //                AccountModel createNewModel = JsonConvert.DeserializeObject<AccountModel>(json);
-
-        //            //Calls method from service
-        //                AccountModel createNewAccount = await _getSevices.createNewAccount(createNewModel);
-
-        //                return ResponseMessage(
-        //                Request.CreateResponse(
-        //                   HttpStatusCode.Created,
-        //                   new BaseDto<AccountModel>()
-        //                   {       
-        //                       Success = true,
-        //                      // Message = createNewAccount.UserName + " Created",
-        //                       Data = createNewAccount
-        //                   }));
-        //            }
-        //            return ResponseMessage(
-        //                Request.CreateResponse(
-        //                   HttpStatusCode.Created,
-        //                   new BaseDto<AccountModel>()
-        //                   {
-        //                       Success = false,
-        //                       Message = "Error input " + HttpStatusCode.BadRequest,
-                             
-        //                   }));
-
-
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        //Returns a 500 response with the specified exception message
-        //        return InternalServerErrorResponse(ex);
-        //    }
-        //}
-
+                       }));
+            }
+            catch (Exception ex)
+            {
+                //Returns a 500 response with the specified exception message
+                return InternalServerErrorResponse(ex);
+            }
+        }
 
         //[HttpPost]
         //[Route("{clientName}/runSqlTest")]

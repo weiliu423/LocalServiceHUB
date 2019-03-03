@@ -44,7 +44,7 @@ namespace MVCHUB.Services
         {
 
             string queryString = "select Username, Password from Account";
-            string connectionString = "Server=fyplab.database.windows.net;Database=LSHUB;User Id=wei;Password=Predator423;";
+            string connectionString = ConfigurationManager.AppSettings["ConnectionString"];
             List<string> names = new List<string>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -70,38 +70,7 @@ namespace MVCHUB.Services
                 return names;
             }
             throw new Exception("No user found");
-        }
-        public async Task<string> getUserScore(string userid)
-        {
-
-            string queryString = "select played, won, lost from hangemanScores where userid = '" + userid + "'";
-            string connectionString = "Server=fyplab.database.windows.net;Database=LSHUB;User Id=wei;Password=Predator423;";
-            string names = "";
-            using (SqlConnection connection = new SqlConnection(connectionString))
-            {
-                SqlCommand command = new SqlCommand(queryString, connection);
-                //command.Parameters.AddWithValue("@tPatSName", "Your-Parm-Value");
-                connection.Open();
-                SqlDataReader reader = command.ExecuteReader();
-                try
-                {
-                    while (reader.Read())
-                    {
-                        names = reader["played"].ToString() + ":" + reader["won"].ToString() + ":" + reader["lost"].ToString();
-                    }
-                }
-                finally
-                {
-                    // Always call Close when done reading.
-                    reader.Close();
-                }
-            }
-            if (names != null)
-            {
-                return names;
-            }
-            throw new Exception("No score found");
-        }
+        }  
         public async Task<AccountModel> createNewAccount(AccountModel data)
         {
                 Account Account = new Account();
@@ -143,46 +112,11 @@ namespace MVCHUB.Services
                 }
                 throw new Exception("No data entered");
            
-        }
-        public async Task<bool> credentialCheck(credentialModel data)
-        {
-            Account Account = new Account();          
-            if (data != null)
-            {
-                Account.userName = data.UserName;
-                Account.resourceKey = "";
-                Account.Password = data.Password;
-                //Account.firstName = data.FirstName;
-                //Account.lastName = data.LastName;
-                //Account.fullName = data.FirstName + " " + data.LastName;
-                //Account.Email = data.Email;
-
-                //var UserAccount = await _context.Account.Any(x=> x.userName.Select(data.UserName));
-                var result = (from e in _context.Account
-                              where e.userName == data.UserName && e.Password == data.Password
-                              select e).FirstOrDefault();
-
-                if (result != null)
-                {
-                    return true;
-                   
-                }else
-                {
-                    return false;
-                }
-
-                //_context.Account.Add(Account);
-
-                //_context.Contexts.SaveChanges();
-                //return false;
-            }
-            throw new Exception("No data entered");
-
-        }
-        public async Task<bool> scoreUpdate(ScoreModel data)
+        }     
+        public async Task<bool> DeleteAccount(int id)
         {
 
-            string queryString = "UPDATE [dbo].[hangemanScores] SET [played] = " + data.played + ",[won] = " + data.won + ",[lost] = " + data.lost + " WHERE userid = '" + data.userId + "'";
+            string queryString = "Delete Account WHERE id = '" + id + "'";
             string connectionString = "Server=fyplab.database.windows.net;Database=LSHUB;User Id=wei;Password=Predator423;";
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -190,10 +124,10 @@ namespace MVCHUB.Services
                 //command.Parameters.AddWithValue("@tPatSName", "Your-Parm-Value");
                 connection.Open();
                 SqlDataReader reader = command.ExecuteReader();
-              
+
             }
             return true;
-        
+
 
         }
         ////Get all stress test belonging to a client

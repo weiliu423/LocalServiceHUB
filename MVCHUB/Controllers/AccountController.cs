@@ -125,40 +125,6 @@ namespace MVCHUB.Controllers
             }
         }
 
-        [HttpGet]
-        [Route("getScore")]
-        public async Task<IHttpActionResult> getScore(string userid)
-        {
-            try
-            {
-                //Calls method from service
-                string scores = await _accountSevices.getUserScore(userid);
-
-                if (scores != null)
-                {
-                    var response = Request.CreateResponse(
-                                HttpStatusCode.OK,
-                                new BaseDto<string>()
-                                {
-                                    Data = scores
-                                });
-                    response.Headers.CacheControl = new CacheControlHeaderValue()
-                    {
-                        Public = true,
-                        MaxAge = TimeSpan.FromSeconds(3600)
-                    };
-                    return ResponseMessage(response);
-
-                }
-                //Error not found
-                return NotFoundResponse();
-            }
-            catch (Exception ex)
-            {
-                //Returns a 500 response with the specified exception message
-                return InternalServerErrorResponse(ex);
-            }
-        }
         //[HttpGet]
         //[Route("getAllTypes")]
         //public async Task<IHttpActionResult> getAllTypes()
@@ -270,62 +236,7 @@ namespace MVCHUB.Controllers
         //        return InternalServerErrorResponse(ex);
         //    }
         //}
-        [HttpPost]
-        [Route("signin")]
-        public async Task<IHttpActionResult> CheckSignIn(HttpRequestMessage signin)
-        {
-            try
-            {
-
-                if (signin != null)
-                {
-                    var json = await signin.Content.ReadAsStringAsync();
-
-                    if (string.IsNullOrEmpty(json))
-                    {
-                        //Return no data found
-                        return NoDataResponse();
-                    }
-
-                    credentialModel createNewModel = JsonConvert.DeserializeObject<credentialModel>(json);
-
-                    //Calls method from service
-                    bool valid = await _accountSevices.credentialCheck(createNewModel);
-                    if(valid == false)
-                    {
-                      return ResponseMessage(Request.CreateResponse(
-                      HttpStatusCode.Created,
-                      new BaseDto<bool>()
-                      {
-                          Success = false,
-                          Message = "UserName or Password is incorrect",
-                          Data = valid
-                      }));
-                    }
-                    else {
-                         return ResponseMessage(
-                         Request.CreateResponse(
-                          HttpStatusCode.Created,
-                          new BaseDto<bool>()
-                          {
-                           Success = valid,
-                           Message = createNewModel.UserName + " successfully signed in.",
-                           Data = valid
-                          }));
-                    }
-                   
-                }
-
-                return NotFoundResponse();
-                      
-
-            }
-            catch (Exception ex)
-            {
-                //Returns a 500 response with the specified exception message
-                return InternalServerErrorResponse(ex);
-            }
-        }
+       
 
         [HttpPost]
         [Route("createNewAccount")]
@@ -367,52 +278,6 @@ namespace MVCHUB.Controllers
                                Message = "Error input " + HttpStatusCode.BadRequest,
                              
                            }));
-
-
-            }
-            catch (Exception ex)
-            {
-                //Returns a 500 response with the specified exception message
-                return InternalServerErrorResponse(ex);
-            }
-        }
-
-        [HttpPut]
-        [Route("updateScore")]
-        public async Task<IHttpActionResult> updateScore(HttpRequestMessage updateScore)
-        {
-            try
-            {
-                if (updateScore != null)
-                {
-                    var json = await updateScore.Content.ReadAsStringAsync();
-
-                    if (string.IsNullOrEmpty(json))
-                    {
-                        //Return no data found
-                        return NoDataResponse();
-                    }
-
-                    ScoreModel score = JsonConvert.DeserializeObject<ScoreModel>(json);
-
-                    //Calls method from service
-                    bool valid = await _accountSevices.scoreUpdate(score);
-                    if (valid == true)
-                    {
-                        return ResponseMessage(Request.CreateResponse(
-                        HttpStatusCode.Created,
-                        new BaseDto<bool>()
-                        {
-                            Success = true,
-                            Message = "updated",
-                            Data = valid
-                        }));
-                    }
-                    
-
-                }
-
-                return NotFoundResponse();
 
 
             }
@@ -640,6 +505,32 @@ namespace MVCHUB.Controllers
         //    return obj.IsValid(schema, out messages);
         //}
 
+        [HttpDelete]
+        [Route("DeleteAccount")]
+        public async Task<IHttpActionResult> DeleteAccount(int id)
+        {
+       
+                    if (id == 0)
+                    {
+                        //Return no data found
+                        return NoDataResponse();
+                    }          
 
+                    //Calls method from service
+                    bool DeleteAccount = await _accountSevices.DeleteAccount(id);
+
+                    return ResponseMessage(
+                    Request.CreateResponse(
+                       HttpStatusCode.Created,
+                       new BaseDto<AccountModel>()
+                       {
+                               Success = DeleteAccount,
+                               Message = "Account deleted",
+                               Data = null
+                       }));
+                
+         
+         
+        }
     }
 }

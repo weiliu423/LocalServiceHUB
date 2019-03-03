@@ -248,6 +248,7 @@
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="Properties\PublishProfiles\LSHAPI - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\MVCHUB - Web Deploy1.pubxml" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>

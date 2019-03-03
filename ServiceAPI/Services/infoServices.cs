@@ -14,7 +14,7 @@ using ServiceAPI.Models;
 
 namespace ServiceAPI.Services
 {
-    public class ServiceServices : IServicesService
+    public class infoServices : IinfoService
     {
 
         protected IMapper iMapper;
@@ -22,7 +22,7 @@ namespace ServiceAPI.Services
 
 
         //Constructor
-        public ServiceServices()
+        public infoServices()
         {       
             //MapConfig();
             //_context = new DBContext();
@@ -43,81 +43,102 @@ namespace ServiceAPI.Services
         public async Task<IEnumerable<string>> getAllServiceSql()
         {
              
-            //string queryString = "select * from Account";
-            //string connectionString = "Server=fyplab.database.windows.net;Database=LSHUB;User Id=wei;Password=Predator423;";
-            List<string> names = new List<string>();
-            names.Add("Course");
-            //using (SqlConnection connection = new SqlConnection(connectionString))
-            //{
-            //    SqlCommand command = new SqlCommand(queryString, connection);
-            //    //command.Parameters.AddWithValue("@tPatSName", "Your-Parm-Value");
-            //    connection.Open();
-            //    SqlDataReader reader = command.ExecuteReader();
-            //    try
-            //    {
-            //        while (reader.Read())
-            //        {
-            //            names.Add(reader["Username"].ToString()+":"+ reader["Password"].ToString());
-            //        }
-            //    }
-            //    finally
-            //    {
-            //        // Always call Close when done reading.
-            //        reader.Close();
-            //    }
-            //}
-            //if (names != null)
-            //{
-            //    return names;
-            //}
-            return names;
+            string queryString = "select st.CategoryName, [Name], [Description] from dbo.Services s join ServiceType st on st.ServiceTypeID = s.TypeId";
+            string connectionString = ConfigurationManager.AppSettings["ConnectionString"];
+            List<string> services = new List<string>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                SqlCommand command = new SqlCommand(queryString, connection);
+                //command.Parameters.AddWithValue("@tPatSName", "Your-Parm-Value");
+                connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                try
+                {
+                    while (reader.Read())
+                    {
+                        services.Add(reader["CategoryName"].ToString() + ":" + reader["Name"].ToString() + ":" + reader["Description"].ToString());
+                    }
+                }
+                finally
+                {
+                    // Always call Close when done reading.
+                    reader.Close();
+                }
+            }
+            if (services != null)
+            {
+                return services;
+            }
+            return services;
             //throw new Exception("No user found");
         }
-      
-        //public async Task<AccountModel> createNewAccount(AccountModel data)
-        //{
-        //        Account Account = new Account();
-        //        DateTime date = DateTime.Now;
-        //        if (data != null)
-        //        {
-        //        Account.userName=data.UserName;
-        //        Account.createDate = date;
-        //        Account.expirationDate = date.AddYears(1); 
-        //        Account.resourceKey = "";
-        //        Account.Password = data.Password;
-        //        Account.firstName = data.FirstName;
-        //        Account.lastName = data.LastName;
-        //        Account.fullName = data.FirstName+ " " + data.LastName;
-        //        Account.Email = data.Email;
+
+        public async Task<bool> createService(infoModel data)
+        {
+            //Account Account = new Account();
+            //DateTime date = DateTime.Now;
+            if (data != null)
+            {
+                //Account.userName = data.UserName;
+                //Account.createDate = date;
+                //Account.expirationDate = date.AddYears(1);
+                //Account.resourceKey = "";
+                //Account.Password = data.Password;
+                //Account.firstName = data.FirstName;
+                //Account.lastName = data.LastName;
+                //Account.fullName = data.FirstName + " " + data.LastName;
+                //Account.Email = data.Email;
 
 
-        //        string queryString = "insert hangemanScores values ('" + data.UserName +"', 0,0,0 )";
-        //        string connectionString = "Server=fyplab.database.windows.net;Database=LSHUB;User Id=wei;Password=Predator423;";
-        //        using (SqlConnection connection = new SqlConnection(connectionString))
-        //        {
-        //            SqlCommand command = new SqlCommand(queryString, connection);
-        //            //command.Parameters.AddWithValue("@tPatSName", "Your-Parm-Value");
-        //            connection.Open();
-        //            SqlDataReader reader = command.ExecuteReader();
+                string queryString = "  insert into [Services] values ('"+data.Name+"',"+ data.TypeId +", GETDATE(),"+ data.LinkAccountId +",'"+data.Description+"')";
+                string connectionString = "Server=fyplab.database.windows.net;Database=LSHUB;User Id=wei;Password=Predator423;";
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    SqlCommand command = new SqlCommand(queryString, connection);
+                    //command.Parameters.AddWithValue("@tPatSName", "Your-Parm-Value");
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                }
+              
+                return true;
+            }
+            throw new Exception("No data entered");
 
-        //        }
-        //        var UserAccount = await _context.Account.FirstOrDefaultAsync(x => x.userName == data.UserName);
+        }
 
-        //            if (UserAccount != null)
-        //            {
-        //                throw new Exception("User with same username already exists");
-        //            }
+        public async Task<bool> addServiceType(ServiceType data)
+        {
+            //Account Account = new Account();
+            //DateTime date = DateTime.Now;
+            if (data != null)
+            {
+                //Account.userName = data.UserName;
+                //Account.createDate = date;
+                //Account.expirationDate = date.AddYears(1);
+                //Account.resourceKey = "";
+                //Account.Password = data.Password;
+                //Account.firstName = data.FirstName;
+                //Account.lastName = data.LastName;
+                //Account.fullName = data.FirstName + " " + data.LastName;
+                //Account.Email = data.Email;
 
-        //            _context.Account.Add(Account);
 
-        //            _context.Contexts.SaveChanges();
-        //            return data;
-        //        }
-        //        throw new Exception("No data entered");
-           
-        //}
-      
-      
+                string queryString = "  insert into [dbo].[ServiceType] values ('" + data.CategoryName + "')";
+                string connectionString = "Server=fyplab.database.windows.net;Database=LSHUB;User Id=wei;Password=Predator423;";
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    SqlCommand command = new SqlCommand(queryString, connection);
+                    //command.Parameters.AddWithValue("@tPatSName", "Your-Parm-Value");
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                }
+
+                return true;
+            }
+            throw new Exception("No data entered");
+
+        }
+
         ////Get all stress test belonging to a client
         //public async Task<IEnumerable<StressTestModel>> getAllClientStressTests(string name)
         //{

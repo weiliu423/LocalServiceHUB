@@ -227,15 +227,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
-    <Compile Include="Controllers\ServicesController.cs" />
+    <Compile Include="Controllers\InfoController.cs" />
     <Compile Include="Controllers\BaseApiController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Interfaces\IServicesService.cs" />
+    <Compile Include="Interfaces\IinfoService.cs" />
     <Compile Include="Models\BaseDto.cs" />
+    <Compile Include="Models\infoModel.cs" />
+    <Compile Include="Models\ServiceType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\ServiceServices.cs" />
+    <Compile Include="Services\infoServices.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="favicon.ico" />
@@ -254,6 +256,7 @@
   <ItemGroup>
     <Content Include="ApplicationInsights.config" />
     <None Include="packages.config" />
+    <None Include="Properties\PublishProfiles\ServiceInfo - Web Deploy.pubxml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

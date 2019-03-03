@@ -11,9 +11,7 @@ namespace MVCHUB.Interfaces
     {
         Task<IEnumerable<string>> getAllUsers();
         Task<IEnumerable<string>> getAllUsersSql();
-        Task<string> getUserScore(string userid);
         Task<AccountModel> createNewAccount(AccountModel data);
-        Task<bool> credentialCheck(credentialModel data);
-        Task<bool> scoreUpdate(ScoreModel data);
+        Task<bool> DeleteAccount(int id);
     }
 }
