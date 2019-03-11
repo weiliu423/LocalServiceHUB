@@ -17,8 +17,6 @@ namespace MVCHUB.Controllers
     [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class AccountController : BaseApiController
     {
-
-        //Error messages
         IList<string> messages;
         AccountServices _accountSevices; 
 
