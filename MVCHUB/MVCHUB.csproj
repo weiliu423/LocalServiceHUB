@@ -237,7 +237,6 @@
     <Compile Include="Models\AccountModel.cs" />
     <Compile Include="Models\BaseDto.cs" />
     <Compile Include="Models\credentialModel.cs" />
-    <Compile Include="Models\ScoreModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\AccountServices.cs" />
     <Compile Include="Services\DBContext.cs" />

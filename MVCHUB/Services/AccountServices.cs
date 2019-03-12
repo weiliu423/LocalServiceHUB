@@ -86,18 +86,7 @@ namespace MVCHUB.Services
                 Account.lastName = data.LastName;
                 Account.fullName = data.FirstName+ " " + data.LastName;
                 Account.Email = data.Email;
-
-
-                string queryString = "insert hangemanScores values ('" + data.UserName +"', 0,0,0 )";
-                string connectionString = "Server=fyplab.database.windows.net;Database=LSHUB;User Id=wei;Password=Predator423;";
-                using (SqlConnection connection = new SqlConnection(connectionString))
-                {
-                    SqlCommand command = new SqlCommand(queryString, connection);
-                    //command.Parameters.AddWithValue("@tPatSName", "Your-Parm-Value");
-                    connection.Open();
-                    SqlDataReader reader = command.ExecuteReader();
-
-                }
+                data.FullName = data.FirstName + " " + data.LastName;
                 var UserAccount = await _context.Account.FirstOrDefaultAsync(x => x.userName == data.UserName);
 
                     if (UserAccount != null)
@@ -112,7 +101,35 @@ namespace MVCHUB.Services
                 }
                 throw new Exception("No data entered");
            
-        }     
+        }
+        public async Task<bool> accountValidation(AccountModel data)
+        {
+        
+            if (data != null)
+            {
+                
+                var UserAccount = await _context.Account.FirstOrDefaultAsync(x => x.userName == data.UserName);
+
+                if (UserAccount != null)
+                {
+                    var password = await _context.Account.FirstOrDefaultAsync(x => x.Password == data.Password);
+                    if(password != null)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                throw new Exception("User doesn't exist");
+
+
+
+            }
+            throw new Exception("No data entered");
+
+        }
         public async Task<bool> DeleteAccount(int id)
         {
 
@@ -130,6 +147,8 @@ namespace MVCHUB.Services
 
 
         }
+
+   
         ////Get all stress test belonging to a client
         //public async Task<IEnumerable<StressTestModel>> getAllClientStressTests(string name)
         //{

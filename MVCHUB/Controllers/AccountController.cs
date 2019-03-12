@@ -286,6 +286,56 @@ namespace MVCHUB.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("accountValidation")]
+        public async Task<IHttpActionResult> AccountValidation(HttpRequestMessage account)
+        {
+            try
+            {
+                if (account != null)
+                {
+                    var json = await account.Content.ReadAsStringAsync();
+
+                    if (string.IsNullOrEmpty(json))
+                    {
+                        //Return no data found
+                        return NoDataResponse();
+                    }
+
+                    AccountModel accountmodel = JsonConvert.DeserializeObject<AccountModel>(json);
+
+                    //Calls method from service
+                    bool check = await _accountSevices.accountValidation(accountmodel);
+
+                    return ResponseMessage(
+                    Request.CreateResponse(
+                       HttpStatusCode.Created,
+                       new BaseDto<AccountModel>()
+                       {
+                               Success = check
+                               // Message = createNewAccount.UserName + " Created",
+                               //Data = check
+                       }));
+                }
+                return ResponseMessage(
+                    Request.CreateResponse(
+                       HttpStatusCode.Created,
+                       new BaseDto<AccountModel>()
+                       {
+                           Success = false,
+                           Message = "Error input " + HttpStatusCode.BadRequest,
+
+                       }));
+
+
+            }
+            catch (Exception ex)
+            {
+                //Returns a 500 response with the specified exception message
+                return InternalServerErrorResponse(ex);
+            }
+        }
+
         //[HttpPost]
         //[Route("{clientName}/runSqlTest")]
         //public async Task<IHttpActionResult> executeStressTest(string clientName, HttpRequestMessage request)
