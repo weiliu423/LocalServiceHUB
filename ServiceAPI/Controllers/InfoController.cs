@@ -54,19 +54,19 @@ namespace ServiceAPI.Controllers
         }
 
         [HttpGet]
-        [Route("getAllServices")]
-        public async Task<IHttpActionResult> getAllServices()
+        [Route("getServicesByName/{name}")]
+        public async Task<IHttpActionResult> getServicesByName(string name)
         {
             try
             {
                 //Calls method from service
-                IEnumerable<string> services = await _getSevices.getAllServiceSql();
+                List<ServiceDataModel> services = await _getSevices.getAllServiceSql(name);
 
                 if (services != null)
                 {
                     var response = Request.CreateResponse(
                                 HttpStatusCode.OK,
-                                new BaseDto<IEnumerable<string>>()
+                                new BaseDto<List<ServiceDataModel>>()
                                 {
                                     Success = true,
                                     Message = "List of services",

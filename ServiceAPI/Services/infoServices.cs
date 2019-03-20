@@ -11,6 +11,7 @@ using System.Data;
 using System.IO;
 using ServiceAPI.Interfaces;
 using ServiceAPI.Models;
+using Newtonsoft.Json;
 
 namespace ServiceAPI.Services
 {
@@ -28,35 +29,29 @@ namespace ServiceAPI.Services
             _context = new DBContext();
         }
 
-        //Get list of all clients
-        //public async Task<IEnumerable<string>> getAllUsers()
-        //{
-
-        //    var names = await _context.Account.Select(g => g.userName).ToListAsync();
-   
-        //    if (names != null)
-        //    {
-        //        return names;
-        //    }
-        //    throw new Exception("No user found");
-        //}
-        public async Task<IEnumerable<string>> getAllServiceSql()
+        public async Task<List<ServiceDataModel>> getAllServiceSql(string categoryName)
         {
-             
-            string queryString = "select st.CategoryName, [Name], [Description] from dbo.Services s join ServiceType st on st.ServiceTypeID = s.TypeId";
+            List<ServiceDataModel> serviceData = new List<ServiceDataModel>();
+            //string queryString = "select [Name], [Description], [ImageLink], a.userName, s.CreateDate, a.[PhoneNo], a.[Email] from dbo.Services s join Account a on a.ID = s.LinkAccountId join ServiceType st on st.ServiceTypeID = s.TypeId where st.CategoryName = '" + categoryName + "'";
+            string queryString = "getServicesByName ";
             string connectionString = ConfigurationManager.AppSettings["ConnectionString"];
-            List<string> services = new List<string>();
+   
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 SqlCommand command = new SqlCommand(queryString, connection);
-                //command.Parameters.AddWithValue("@tPatSName", "Your-Parm-Value");
+                command.CommandType = CommandType.StoredProcedure;
+                command.Parameters.AddWithValue("@CategoryName", categoryName);
                 connection.Open();
                 SqlDataReader reader = command.ExecuteReader();
                 try
                 {
                     while (reader.Read())
                     {
-                        services.Add(reader["CategoryName"].ToString() + ":" + reader["Name"].ToString() + ":" + reader["Description"].ToString());
+                         serviceData = JsonConvert.DeserializeObject<List<ServiceDataModel>>(reader[0].ToString());
+                       
+                    //    services.Add(reader["Name"].ToString() + ":" + reader["Description"].ToString() + ":" + reader["ImageLink"].ToString() + ":" 
+                    //        + reader["userName"].ToString() 
+                    //        + ":" + reader["CreateDate"].ToString() + ":" + reader["PhoneNo"].ToString() + ":" + reader["Email"].ToString());
                     }
                 }
                 finally
@@ -65,11 +60,11 @@ namespace ServiceAPI.Services
                     reader.Close();
                 }
             }
-            if (services != null)
+            if (serviceData != null)
             {
-                return services;
+                return serviceData;
             }
-            return services;
+            return null;
             //throw new Exception("No user found");
         }
 

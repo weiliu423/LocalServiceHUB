@@ -10,7 +10,7 @@ namespace ServiceAPI.Interfaces
     public interface IinfoService
     {
 
-        Task<IEnumerable<string>> getAllServiceSql();
+        Task<List<ServiceDataModel>> getAllServiceSql(string categoryName);
         Task<bool> createService(infoModel data);
         Task<bool> addServiceType(ServiceType data);
 
