@@ -18,14 +18,14 @@ namespace ServiceAPI.Services
     {
 
         protected IMapper iMapper;
-       // protected DBContext _context;
+        protected DBContext _context;
 
 
         //Constructor
         public infoServices()
         {       
             //MapConfig();
-            //_context = new DBContext();
+            _context = new DBContext();
         }
 
         //Get list of all clients
@@ -77,21 +77,12 @@ namespace ServiceAPI.Services
         {
             //Account Account = new Account();
             //DateTime date = DateTime.Now;
+            var typeId = await _context.ServiceType.Where(n => n.CategoryName == data.TypeName).Select(x => x.ServiceTypeID).FirstOrDefaultAsync();
             if (data != null)
             {
-                //Account.userName = data.UserName;
-                //Account.createDate = date;
-                //Account.expirationDate = date.AddYears(1);
-                //Account.resourceKey = "";
-                //Account.Password = data.Password;
-                //Account.firstName = data.FirstName;
-                //Account.lastName = data.LastName;
-                //Account.fullName = data.FirstName + " " + data.LastName;
-                //Account.Email = data.Email;
-
-
-                string queryString = "  insert into [Services] values ('"+data.Name+"',"+ data.TypeId +", GETDATE(),"+ data.LinkAccountId +",'"+data.Description+"')";
-                string connectionString = "Server=fyplab.database.windows.net;Database=LSHUB;User Id=wei;Password=Predator423;";
+                string queryString = "  insert into [Services] values ('"+data.Name+"',"+ typeId + ", GETDATE(),"+ data.LinkAccountId +",'"+data.Description+"','" + data.ImageLink + "')";
+               
+                string connectionString = ConfigurationManager.AppSettings["ConnectionString"];
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     SqlCommand command = new SqlCommand(queryString, connection);
