@@ -260,11 +260,11 @@ namespace MVCHUB.Controllers
                         return ResponseMessage(
                         Request.CreateResponse(
                            HttpStatusCode.Created,
-                           new BaseDto<AccountModel>()
+                           new BaseDto<String>()
                            {       
                                Success = true,
                               // Message = createNewAccount.UserName + " Created",
-                               Data = createNewAccount
+                               Data = createNewAccount.FullName
                            }));
                     }
                     return ResponseMessage(
@@ -305,16 +305,16 @@ namespace MVCHUB.Controllers
                     AccountModel accountmodel = JsonConvert.DeserializeObject<AccountModel>(json);
 
                     //Calls method from service
-                    bool check = await _accountSevices.accountValidation(accountmodel);
+                    String check = await _accountSevices.accountValidation(accountmodel);
 
                     return ResponseMessage(
                     Request.CreateResponse(
                        HttpStatusCode.Created,
-                       new BaseDto<AccountModel>()
+                       new BaseDto<String>()
                        {
-                               Success = check
+                               Success = true,
                                // Message = createNewAccount.UserName + " Created",
-                               //Data = check
+                               Data = check
                        }));
                 }
                 return ResponseMessage(

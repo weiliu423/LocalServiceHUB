@@ -65,6 +65,7 @@ namespace ServiceAPI.Services
                 return serviceData;
             }
             return null;
+
             //throw new Exception("No user found");
         }
 
@@ -73,11 +74,31 @@ namespace ServiceAPI.Services
             //Account Account = new Account();
             //DateTime date = DateTime.Now;
             var typeId = await _context.ServiceType.Where(n => n.CategoryName == data.TypeName).Select(x => x.ServiceTypeID).FirstOrDefaultAsync();
+            string queryString1 = "Select ID from [dbo].[Account] where userName = '"+ data.ImageLink + "'";
+            int accountID = 0;
+            string connectionString = ConfigurationManager.AppSettings["ConnectionString"];
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                SqlCommand command = new SqlCommand(queryString1, connection);
+                //command.Parameters.AddWithValue("@tPatSName", "Your-Parm-Value");
+                connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                try
+                {
+                    while (reader.Read())
+                    {
+                        accountID = Convert.ToInt32(reader["ID"]);
+                    }
+                }
+                finally
+                {
+                    reader.Close();
+                }
+            }
             if (data != null)
             {
-                string queryString = "  insert into [Services] values ('"+data.Name+"',"+ typeId + ", GETDATE(),"+ data.LinkAccountId +",'"+data.Description+"','" + data.ImageLink + "')";
+                string queryString = "  insert into [Services] values ('"+data.Name+"',"+ typeId + ", GETDATE(),"+ accountID +",'"+data.Description+"','" + data.ImageLink + "')";
                
-                string connectionString = ConfigurationManager.AppSettings["ConnectionString"];
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     SqlCommand command = new SqlCommand(queryString, connection);
@@ -98,16 +119,6 @@ namespace ServiceAPI.Services
             //DateTime date = DateTime.Now;
             if (data != null)
             {
-                //Account.userName = data.UserName;
-                //Account.createDate = date;
-                //Account.expirationDate = date.AddYears(1);
-                //Account.resourceKey = "";
-                //Account.Password = data.Password;
-                //Account.firstName = data.FirstName;
-                //Account.lastName = data.LastName;
-                //Account.fullName = data.FirstName + " " + data.LastName;
-                //Account.Email = data.Email;
-
 
                 string queryString = "  insert into [dbo].[ServiceType] values ('" + data.CategoryName + "')";
                 string connectionString = "Server=fyplab.database.windows.net;Database=LSHUB;User Id=wei;Password=Predator423;";

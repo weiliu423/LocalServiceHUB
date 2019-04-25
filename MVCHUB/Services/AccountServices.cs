@@ -102,7 +102,7 @@ namespace MVCHUB.Services
                 throw new Exception("No data entered");
            
         }
-        public async Task<bool> accountValidation(AccountModel data)
+        public async Task<String> accountValidation(AccountModel data)
         {
         
             if (data != null)
@@ -115,11 +115,12 @@ namespace MVCHUB.Services
                     var password = await _context.Account.FirstOrDefaultAsync(x => x.Password == data.Password);
                     if(password != null)
                     {
-                        return true;
+                        var fullName = await _context.Account.Where(x => x.userName == data.UserName).Select(x=> x.fullName).FirstOrDefaultAsync();
+                        return fullName;
                     }
                     else
                     {
-                        return false;
+                        return null;
                     }
                 }
                 throw new Exception("User doesn't exist");

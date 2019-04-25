@@ -12,5 +12,6 @@ namespace ServiceAPI.Models
         public int LinkAccountId { get; set; }
         public string Description { get; set; }
         public string ImageLink { get; set; }
+        public string AccountName { get; set; }
     }
 }
