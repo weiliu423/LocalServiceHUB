@@ -13,6 +13,7 @@ namespace ServiceAPI.Interfaces
         Task<List<ServiceDataModel>> getAllServiceSql(string categoryName);
         Task<bool> createService(infoModel data);
         Task<bool> addServiceType(ServiceType data);
+        Task<IEnumerable<string>> getAllCategories();
 
     }
 }

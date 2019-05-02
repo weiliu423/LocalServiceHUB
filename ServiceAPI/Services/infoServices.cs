@@ -28,6 +28,38 @@ namespace ServiceAPI.Services
             //MapConfig();
             _context = new DBContext();
         }
+        public async Task<IEnumerable<string>> getAllCategories()
+        {
+
+            String queryString = "select [CategoryName] from [dbo].[ServiceType]";
+            string connectionString = "Server=fyplab.database.windows.net;Database=LSHUB;User Id=wei;Password=Predator423;";
+            List<string> names = new List<string>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                SqlCommand command = new SqlCommand(queryString, connection);
+                //command.Parameters.AddWithValue("@tPatSName", "Your-Parm-Value");
+                connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                try
+                {
+                    while (reader.Read())
+                    {
+                        names.Add(reader["CategoryName"].ToString());
+                    }
+                }
+                finally
+                {
+                    // Always call Close when done reading.
+                    reader.Close();
+                }
+            }
+            if (names != null)
+            {
+                return names;
+            }
+            throw new Exception("No Category found");
+        }
+
 
         public async Task<List<ServiceDataModel>> getAllServiceSql(string categoryName)
         {

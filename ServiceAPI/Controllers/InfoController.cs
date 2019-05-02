@@ -54,6 +54,44 @@ namespace ServiceAPI.Controllers
         }
 
         [HttpGet]
+        [Route("getAllCategories")]
+        public async Task<IHttpActionResult> getAllCategories()
+        {
+            try
+            {
+                //Calls method from service
+                IEnumerable<string> names = await _getSevices.getAllCategories();
+
+                if (names != null)
+                {
+                    var response = Request.CreateResponse(
+                                HttpStatusCode.OK,
+                                new BaseDto<IEnumerable<string>>()
+                                {
+                                    Success = true,
+                                    Message = "List of Categories",
+                                    Data = names
+                                });
+                    response.Headers.CacheControl = new CacheControlHeaderValue()
+                    {
+                        Public = true,
+                        MaxAge = TimeSpan.FromSeconds(3600)
+                    };
+                    return ResponseMessage(response);
+
+                }
+                //Error not found
+                return NotFoundResponse();
+            }
+            catch (Exception ex)
+            {
+                //Returns a 500 response with the specified exception message
+                return InternalServerErrorResponse(ex);
+            }
+        }
+
+
+        [HttpGet]
         [Route("getServicesByName/{name}")]
         public async Task<IHttpActionResult> getServicesByName(string name)
         {
@@ -135,6 +173,7 @@ namespace ServiceAPI.Controllers
                 return InternalServerErrorResponse(ex);
             }
         }
+
 
         [HttpPost]
         [Route("addServiceType")]
