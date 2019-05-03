@@ -306,7 +306,18 @@ namespace MVCHUB.Controllers
 
                     //Calls method from service
                     String check = await _accountSevices.accountValidation(accountmodel);
-
+                    if(check == null)
+                    {
+                            return ResponseMessage(
+                        Request.CreateResponse(
+                           HttpStatusCode.Created,
+                           new BaseDto<String>()
+                           {
+                               Success = false,
+                               // Message = createNewAccount.UserName + " Created",
+                               Data = check
+                           }));
+                    }
                     return ResponseMessage(
                     Request.CreateResponse(
                        HttpStatusCode.Created,

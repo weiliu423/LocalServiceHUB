@@ -106,7 +106,7 @@ namespace ServiceAPI.Services
             //Account Account = new Account();
             //DateTime date = DateTime.Now;
             var typeId = await _context.ServiceType.Where(n => n.CategoryName == data.TypeName).Select(x => x.ServiceTypeID).FirstOrDefaultAsync();
-            string queryString1 = "Select ID from [dbo].[Account] where userName = '"+ data.ImageLink + "'";
+            string queryString1 = "Select ID from [dbo].[Account] where userName = '"+ data.AccountName + "'";
             int accountID = 0;
             string connectionString = ConfigurationManager.AppSettings["ConnectionString"];
             using (SqlConnection connection = new SqlConnection(connectionString))
