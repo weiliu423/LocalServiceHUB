@@ -170,7 +170,7 @@ namespace ServiceAPI.Services
             }
             if (data != null)
             {
-                string queryString = "  insert into [Services] values ('"+data.Name+"',"+ typeId + ", GETDATE(),"+ accountID +",'"+data.Description+"','" + data.ImageLink + "')";
+                string queryString = "  insert into [Services] values ('"+data.Name+"',"+ typeId + ", GETDATE(),"+ accountID +",'"+data.Description+"','" + data.ImageLink +"','" + data.ServiceLocation + "')";
                
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {

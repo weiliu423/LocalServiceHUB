@@ -11,5 +11,6 @@ namespace ServiceAPI.Models
         public string Description { get; set; }
         public string ImageLink { get; set; }
         public DateTime CreateDate { get; set; }
+        public string ServiceLocation { get; set; }
     }
 }
