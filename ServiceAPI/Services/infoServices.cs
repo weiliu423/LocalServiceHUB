@@ -101,6 +101,47 @@ namespace ServiceAPI.Services
             //throw new Exception("No user found");
         }
 
+        public async Task<List<ServiceDataModel>> getAllServices()
+        {
+            List<ServiceDataModel> serviceData = new List<ServiceDataModel>();
+            //string queryString = "select [Name], [Description], [ImageLink], a.userName, s.CreateDate, a.[PhoneNo], a.[Email] from dbo.Services s join Account a on a.ID = s.LinkAccountId join ServiceType st on st.ServiceTypeID = s.TypeId where st.CategoryName = '" + categoryName + "'";
+            string queryString = "[getAllServices]";
+            string connectionString = ConfigurationManager.AppSettings["ConnectionString"];
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                SqlCommand command = new SqlCommand(queryString, connection);
+                command.CommandType = CommandType.StoredProcedure;
+                //command.Parameters.AddWithValue("@CategoryName", categoryName);
+                connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                try
+                {
+                    while (reader.Read())
+                    {
+                        serviceData = JsonConvert.DeserializeObject<List<ServiceDataModel>>(reader[0].ToString());
+
+                        //    services.Add(reader["Name"].ToString() + ":" + reader["Description"].ToString() + ":" + reader["ImageLink"].ToString() + ":" 
+                        //        + reader["userName"].ToString() 
+                        //        + ":" + reader["CreateDate"].ToString() + ":" + reader["PhoneNo"].ToString() + ":" + reader["Email"].ToString());
+                    }
+                }
+                finally
+                {
+                    // Always call Close when done reading.
+                    reader.Close();
+                }
+            }
+            if (serviceData != null)
+            {
+                return serviceData;
+            }
+            return null;
+
+            //throw new Exception("No user found");
+        }
+
+
         public async Task<bool> createService(infoModel data)
         {
             //Account Account = new Account();

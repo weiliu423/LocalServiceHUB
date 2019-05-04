@@ -70,7 +70,39 @@ namespace MVCHUB.Services
                 return names;
             }
             throw new Exception("No user found");
-        }  
+        }
+
+        public async Task<IEnumerable<string>> getUserByName(String name)
+        {
+
+            string queryString = "select * from Account where Username = '"+name+"'";
+            string connectionString = ConfigurationManager.AppSettings["ConnectionString"];
+            List<string> names = new List<string>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                SqlCommand command = new SqlCommand(queryString, connection);
+                //command.Parameters.AddWithValue("@tPatSName", "Your-Parm-Value");
+                connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+                try
+                {
+                    while (reader.Read())
+                    {
+                        names.Add(reader["Username"].ToString() + ":" + reader["createDate"].ToString() + ":" + reader["fullName"].ToString() + ":" + reader["Email"].ToString() + ":" + reader["PhoneNo"].ToString());
+                    }
+                }
+                finally
+                {
+                    // Always call Close when done reading.
+                    reader.Close();
+                }
+            }
+            if (names != null)
+            {
+                return names;
+            }
+            throw new Exception("No user found");
+        }
         public async Task<AccountModel> createNewAccount(AccountModel data)
         {
                 Account Account = new Account();

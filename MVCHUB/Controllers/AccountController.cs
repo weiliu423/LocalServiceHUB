@@ -123,6 +123,40 @@ namespace MVCHUB.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("getUserByName/{name}")]
+        public async Task<IHttpActionResult> getUserByName(String name)
+        {
+            try
+            {
+                //Calls method from service
+                IEnumerable<string> clientDetail = await _accountSevices.getUserByName(name);
+
+                if (clientDetail != null)
+                {
+                    var response = Request.CreateResponse(
+                                HttpStatusCode.OK,
+                                new BaseDto<IEnumerable<string>>()
+                                {
+                                    Data = clientDetail
+                                });
+                    response.Headers.CacheControl = new CacheControlHeaderValue()
+                    {
+                        Public = true,
+                        MaxAge = TimeSpan.FromSeconds(3600)
+                    };
+                    return ResponseMessage(response);
+
+                }
+                //Error not found
+                return NotFoundResponse();
+            }
+            catch (Exception ex)
+            {
+                //Returns a 500 response with the specified exception message
+                return InternalServerErrorResponse(ex);
+            }
+        }
         //[HttpGet]
         //[Route("getAllTypes")]
         //public async Task<IHttpActionResult> getAllTypes()
@@ -234,7 +268,7 @@ namespace MVCHUB.Controllers
         //        return InternalServerErrorResponse(ex);
         //    }
         //}
-       
+
 
         [HttpPost]
         [Route("createNewAccount")]

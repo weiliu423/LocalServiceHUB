@@ -14,5 +14,6 @@ namespace MVCHUB.Interfaces
         Task<AccountModel> createNewAccount(AccountModel data);
         Task<String> accountValidation(AccountModel data);
         Task<bool> DeleteAccount(int id);
+        Task<IEnumerable<string>> getUserByName(String name);
     }
 }

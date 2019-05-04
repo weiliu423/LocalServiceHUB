@@ -90,6 +90,42 @@ namespace ServiceAPI.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("getAllServices")]
+        public async Task<IHttpActionResult> getAllServices()
+        {
+            try
+            {
+                //Calls method from service
+                List<ServiceDataModel> services = await _getSevices.getAllServices();
+
+                if (services != null)
+                {
+                    var response = Request.CreateResponse(
+                                HttpStatusCode.OK,
+                                new BaseDto<List<ServiceDataModel>>()
+                                {
+                                    Success = true,
+                                    Message = "List of services",
+                                    Data = services
+                                });
+                    response.Headers.CacheControl = new CacheControlHeaderValue()
+                    {
+                        Public = true,
+                        MaxAge = TimeSpan.FromSeconds(3600)
+                    };
+                    return ResponseMessage(response);
+
+                }
+                //Error not found
+                return NotFoundResponse();
+            }
+            catch (Exception ex)
+            {
+                //Returns a 500 response with the specified exception message
+                return InternalServerErrorResponse(ex);
+            }
+        }
 
         [HttpGet]
         [Route("getServicesByName/{name}")]
