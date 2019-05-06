@@ -164,6 +164,43 @@ namespace ServiceAPI.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("getServicesByAccount/{name}")]
+        public async Task<IHttpActionResult> getServicesByAccount(string name)
+        {
+            try
+            {
+                //Calls method from service
+                List<ServiceDataModel> services = await _getSevices.getAllServiceByAccount(name);
+
+                if (services != null)
+                {
+                    var response = Request.CreateResponse(
+                                HttpStatusCode.OK,
+                                new BaseDto<List<ServiceDataModel>>()
+                                {
+                                    Success = true,
+                                    Message = "List of services",
+                                    Data = services
+                                });
+                    response.Headers.CacheControl = new CacheControlHeaderValue()
+                    {
+                        Public = true,
+                        MaxAge = TimeSpan.FromSeconds(3600)
+                    };
+                    return ResponseMessage(response);
+
+                }
+                //Error not found
+                return NotFoundResponse();
+            }
+            catch (Exception ex)
+            {
+                //Returns a 500 response with the specified exception message
+                return InternalServerErrorResponse(ex);
+            }
+        }
+
         [HttpPost]
         [Route("createService")]
         public async Task<IHttpActionResult> createService(HttpRequestMessage createNew)
@@ -210,6 +247,51 @@ namespace ServiceAPI.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("updateService")]
+        public async Task<IHttpActionResult> updateService(HttpRequestMessage update)
+        {
+            try
+            {
+                if (update != null)
+                {
+                    var json = await update.Content.ReadAsStringAsync();
+
+                    if (string.IsNullOrEmpty(json))
+                    {
+                        //Return no data found
+                        return NoDataResponse();
+                    }
+
+                    infoModel createNewModel = JsonConvert.DeserializeObject<infoModel>(json);
+
+                    //Calls method from service
+                    bool inserted = await _getSevices.updateService(createNewModel);
+
+                    return ResponseMessage(
+                    Request.CreateResponse(
+                       HttpStatusCode.Created,
+                       new BaseDto<bool>()
+                       {
+                           Success = inserted
+                       }));
+                }
+                return ResponseMessage(
+                    Request.CreateResponse(
+                       HttpStatusCode.Created,
+                       new BaseDto<infoModel>()
+                       {
+                           Success = false,
+                           Message = "Error input " + HttpStatusCode.BadRequest,
+
+                       }));
+            }
+            catch (Exception ex)
+            {
+                //Returns a 500 response with the specified exception message
+                return InternalServerErrorResponse(ex);
+            }
+        }
 
         [HttpPost]
         [Route("addServiceType")]

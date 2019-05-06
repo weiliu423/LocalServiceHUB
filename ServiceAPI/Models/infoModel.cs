@@ -7,6 +7,7 @@ namespace ServiceAPI.Models
 {
     public class infoModel
     {
+        public string ServiceID { get; set; }
         public string Name { get; set; }
         public string TypeName { get; set; }
         public int LinkAccountId { get; set; }
