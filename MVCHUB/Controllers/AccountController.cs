@@ -11,6 +11,7 @@ using MVCHUB.Services;
 using MVCHUB.Models;
 using System.Net.Http.Headers;
 using System.Web.Http.Cors;
+using System.Linq;
 
 namespace MVCHUB.Controllers
 {
@@ -55,36 +56,52 @@ namespace MVCHUB.Controllers
         [Route("getAllUsers")]
         public async Task<IHttpActionResult> getAllUsers()
         {
+            var re = Request;
+            var headers = re.Headers;
             try
             {
-                //Calls method from service
-                IEnumerable<string> clientNames = await _accountSevices.getAllUsers();
-
-                if (clientNames != null)
+                if (headers.GetValues("Authkey").First() == "testkey")
                 {
-                    var response = Request.CreateResponse(
-                                HttpStatusCode.OK,
-                                new BaseDto<IEnumerable<string>>()
-                                {
-                                   // Success = true,
-                                   // Message = "List of users",
-                                    Data = clientNames
-                                });
-                    response.Headers.CacheControl = new CacheControlHeaderValue()
+                    try
                     {
-                        Public = true,
-                        MaxAge = TimeSpan.FromSeconds(3600)
-                    };
-                    return ResponseMessage(response);
-                    
+                        //Calls method from service
+                        IEnumerable<string> clientNames = await _accountSevices.getAllUsers();
+
+                        if (clientNames != null)
+                        {
+                            var response = Request.CreateResponse(
+                                        HttpStatusCode.OK,
+                                        new BaseDto<IEnumerable<string>>()
+                                        {
+                                        // Success = true,
+                                        // Message = "List of users",
+                                        Data = clientNames
+                                        });
+                            response.Headers.CacheControl = new CacheControlHeaderValue()
+                            {
+                                Public = true,
+                                MaxAge = TimeSpan.FromSeconds(3600)
+                            };
+                            return ResponseMessage(response);
+
+                        }
+                        //Error not found
+                        return NotFoundResponse();
+                    }
+                    catch (Exception ex)
+                    {
+                        //Returns a 500 response with the specified exception message
+                        return InternalServerErrorResponse(ex);
+                    }
                 }
-                //Error not found
-                return NotFoundResponse();
+                else
+                {
+                    return ResponseMessage(Request.CreateErrorResponse(HttpStatusCode.Unauthorized, "Not unauthorized!"));
+                }
             }
-            catch (Exception ex)
+            catch
             {
-                //Returns a 500 response with the specified exception message
-                return InternalServerErrorResponse(ex);
+                return ResponseMessage(Request.CreateErrorResponse(HttpStatusCode.Unauthorized, "Not unauthorized!"));
             }
         }
 
