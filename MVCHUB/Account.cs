@@ -37,5 +37,10 @@ namespace MVCHUB
 
         [StringLength(200)]
         public string Email { get; set; }
+
+        [StringLength(13)]
+        public string PhoneNo { get; set; }
+
+        public int isProvider { get; set; }
     }
 }

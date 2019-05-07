@@ -17,5 +17,7 @@ namespace MVCHUB.Models
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }
+        public string PhoneNo { get; set; }
+        public int isProvider { get; set; }
     }
 }
