@@ -17,6 +17,7 @@ namespace ServiceAPI.Interfaces
         Task<List<ServiceDataModel>> getAllServices();
         Task<List<ServiceDataModel>> getAllServiceByAccount(string accountName);
         Task<bool> updateService(infoModel data);
-
+        Task<bool> deleteService(infoModel data);
+       
     }
 }

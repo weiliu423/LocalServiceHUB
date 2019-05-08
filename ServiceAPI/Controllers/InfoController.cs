@@ -339,6 +339,51 @@ namespace ServiceAPI.Controllers
             }
         }
 
+        [HttpDelete]
+        [Route("deleteService")]
+        public async Task<IHttpActionResult> deleteService(HttpRequestMessage delete)
+        {
+            try
+            {
+                if (delete != null)
+                {
+                    var json = await delete.Content.ReadAsStringAsync();
+
+                    if (string.IsNullOrEmpty(json))
+                    {
+                        //Return no data found
+                        return NoDataResponse();
+                    }
+
+                    infoModel createNewModel = JsonConvert.DeserializeObject<infoModel>(json);
+
+                    //Calls method from service
+                    bool inserted = await _getSevices.updateService(createNewModel);
+
+                    return ResponseMessage(
+                    Request.CreateResponse(
+                       HttpStatusCode.Created,
+                       new BaseDto<bool>()
+                       {
+                           Success = inserted
+                       }));
+                }
+                return ResponseMessage(
+                    Request.CreateResponse(
+                       HttpStatusCode.Created,
+                       new BaseDto<infoModel>()
+                       {
+                           Success = false,
+                           Message = "Error input " + HttpStatusCode.BadRequest,
+
+                       }));
+            }
+            catch (Exception ex)
+            {
+                //Returns a 500 response with the specified exception message
+                return InternalServerErrorResponse(ex);
+            }
+        }
         //[HttpPost]
         //[Route("{clientName}/runSqlTest")]
         //public async Task<IHttpActionResult> executeStressTest(string clientName, HttpRequestMessage request)
